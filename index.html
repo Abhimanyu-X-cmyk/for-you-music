@@ -4,81 +4,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For you Music | AI Music Studio</title>
+<meta name="theme-color" content="#080b14">
+<title>For you Music — AI Music Studio</title>
+
 <style>
 :root {
-  --bg:#080b14; --panel:#111827; --line:#263248;
-  --text:#f4f7ff; --muted:#9ba9c1;
-  --blue:#36d9ff; --purple:#a78bfa;
+  --bg:#080b14;
+  --panel:#111827;
+  --line:#263248;
+  --text:#f4f7ff;
+  --muted:#9ba9c1;
+  --blue:#36d9ff;
+  --purple:#a78bfa;
 }
 * {box-sizing:border-box}
 body {
-  margin:0; background:var(--bg); color:var(--text);
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
   font-family:system-ui,-apple-system,sans-serif;
 }
 header {
-  padding:18px 5%; display:flex; align-items:center;
-  justify-content:space-between; border-bottom:1px solid var(--line);
+  padding:17px 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
 }
-.logo {font-weight:800;font-size:21px}
+.logo {font-size:21px;font-weight:800}
 .logo span {color:var(--blue)}
-.pill {border:1px solid var(--line);padding:7px 11px;
-  border-radius:30px;color:var(--muted);font-size:12px}
-main {max-width:900px;margin:auto;padding:32px 18px 60px}
-.hero {text-align:center;padding:25px 0 30px}
+.pill {
+  border:1px solid var(--line);
+  padding:7px 11px;
+  border-radius:30px;
+  color:var(--muted);
+  font-size:11px;
+}
+main {max-width:900px;margin:auto;padding:28px 16px 50px}
+.hero {text-align:center;padding:20px 0 30px}
 .kicker {color:var(--blue);font-size:12px;letter-spacing:3px}
-h1 {font-size:clamp(35px,8vw,60px);line-height:1.08;
-  margin:15px 0}
-h1 span {background:linear-gradient(90deg,var(--blue),var(--purple));
-  color:transparent;background-clip:text}
-p {color:var(--muted);line-height:1.65}
+h1 {font-size:clamp(35px,8vw,58px);line-height:1.1;margin:15px 0}
+h1 span {
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  color:transparent;
+  background-clip:text;
+}
+p {color:var(--muted);line-height:1.6}
 .hero p {max-width:520px;margin:auto}
-.panel {background:var(--panel);border:1px solid var(--line);
-  border-radius:20px;padding:20px;margin-bottom:18px}
-h2 {font-size:18px;margin:0 0 7px}
-.step {color:var(--blue);font-size:12px;margin-bottom:8px}
-.upload {
-  display:block;border:1px dashed #536580;border-radius:14px;
-  padding:28px 12px;text-align:center;margin-top:16px;
-  cursor:pointer;background:#0b1220;
+.panel {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:19px;
+  margin-bottom:16px;
 }
-.upload strong {display:block;font-size:17px;margin:10px}
-.upload input {width:100%;margin-top:12px}
+.step {color:var(--blue);font-size:11px;letter-spacing:2px;margin-bottom:8px}
+h2 {font-size:18px;margin:0 0 8px}
 .small {font-size:12px}
-#songName {overflow-wrap:anywhere;margin:12px 0}
-audio {width:100%;margin-top:10px}
-.grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;margin-top:17px}
+.upload {
+  display:block;
+  border:1px dashed #536580;
+  border-radius:14px;
+  padding:23px 14px;
+  text-align:center;
+  margin-top:15px;
+  background:#0b1220;
+}
+.upload-icon {font-size:32px}
+.upload strong {display:block;font-size:16px;margin:10px 0}
+.upload input {
+  display:block;
+  width:100%;
+  margin-top:15px;
+  color:var(--text);
+  font-size:14px;
+}
+input[type=file]::file-selector-button {
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#1a2940;
+  color:white;
+  margin-right:10px;
+}
+#songName {overflow-wrap:anywhere;margin-top:13px}
+audio {display:block;width:100%;margin-top:14px}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-top:16px;
+}
 .instrument {
-  color:var(--text);background:#0b1220;border:1px solid var(--line);
-  padding:15px 5px;border-radius:13px;cursor:pointer;
-  font:inherit;min-height:95px;
+  min-width:0;
+  min-height:91px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 3px;
+  background:#0b1220;
+  color:var(--text);
+  font:inherit;
+  cursor:pointer;
 }
-.instrument .emoji {font-size:25px;display:block;margin-bottom:8px}
-.instrument.selected {border-color:var(--blue);
-  background:#10273a;box-shadow:inset 0 0 0 1px var(--blue)}
-.instrument:focus-visible,button:focus-visible {
-  outline:2px solid var(--blue);outline-offset:3px
+.instrument .emoji {display:block;font-size:25px;margin-bottom:7px}
+.instrument small {display:block;color:var(--muted);font-size:10px}
+.instrument.selected {
+  border-color:var(--blue);
+  background:#10273a;
+  box-shadow:inset 0 0 0 1px var(--blue);
 }
-.instrument small {color:var(--muted);font-size:11px}
+button:focus-visible,input:focus-visible {
+  outline:2px solid var(--blue);
+  outline-offset:3px;
+}
 input[type=range] {width:100%;accent-color:var(--blue)}
 .primary {
-  width:100%;border:0;border-radius:13px;padding:16px;
-  color:#07111c;background:linear-gradient(90deg,var(--blue),#a5f3fc);
-  font-size:16px;font-weight:800;cursor:pointer;margin-top:17px;
+  width:100%;
+  margin-top:16px;
+  padding:16px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--blue),#a5f3fc);
+  color:#07111c;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
 }
-.primary:disabled {opacity:.5;cursor:not-allowed}
-.notice {font-size:13px;border-radius:12px;padding:13px;
-  background:#0a1422;color:var(--muted);margin-top:14px}
-#status {overflow-wrap:anywhere}
-footer {text-align:center;padding:22px;color:var(--muted);
-  font-size:12px;border-top:1px solid var(--line)}
+.notice {
+  margin-top:13px;
+  padding:13px;
+  background:#0a1422;
+  border-radius:10px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
+footer {
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  font-size:12px;
+  border-top:1px solid var(--line);
+}
 @media(min-width:600px) {
+  main {padding-left:22px;padding-right:22px}
+  .panel {padding:25px}
   .grid {grid-template-columns:repeat(4,minmax(0,1fr))}
-  .panel {padding:26px}
 }
 </style>
 </head>
+
 <body>
 <header>
   <div class="logo">♫ For you <span>Music</span></div>
@@ -89,78 +165,96 @@ footer {text-align:center;padding:22px;color:var(--muted);
   <section class="hero">
     <div class="kicker">YOUR MUSIC, YOUR WAY</div>
     <h1>Give your song<br><span>a new sound.</span></h1>
-    <p>Upload your music. Choose your instruments.
-       Imagine a whole new arrangement made for you.</p>
+    <p>Upload your song, choose your favourite instruments,
+    and prepare for a new musical arrangement.</p>
   </section>
 
   <section class="panel">
     <div class="step">STEP 01</div>
     <h2>Upload your song</h2>
     <p class="small">Choose an audio file up to 10 minutes long.</p>
-    <label class="upload">
-      <span style="font-size:32px">♫ ↑</span>
+
+    <div class="upload">
+      <div class="upload-icon">♫ ↑</div>
       <strong>Choose audio from your phone</strong>
-      <span class="small">MP3, WAV, M4A, OGG and supported audio formats</span>
-      <input id="file" type="file" accept="audio/*">
-    </label>
-    <div id="songName" class="small">No song selected yet.</div>
-    <audio id="player" controls hidden></audio>
+      <p class="small">MP3, WAV, M4A, OGG and other supported audio files</p>
+
+      <input
+        id="file"
+        type="file"
+        accept=".mp3,.wav,.m4a,.ogg,.aac,.flac,audio/*"
+        aria-label="Choose an audio file"
+      />
+    </div>
+
+    <div id="songName" class="small" aria-live="polite">
+      No song selected yet.
+    </div>
+
+    <audio id="player" controls preload="metadata" hidden></audio>
   </section>
 
   <section class="panel">
     <div class="step">STEP 02</div>
     <h2>Choose your instruments</h2>
-    <p>Select as many as you like.</p>
+    <p>Select multiple instruments to create your preferred combination.</p>
+
     <div class="grid" id="instruments">
-      <button class="instrument" data-name="Piano">
+      <button type="button" class="instrument" data-name="Piano" aria-pressed="false">
         <span class="emoji">🎹</span>Piano
       </button>
-      <button class="instrument" data-name="Keyboard">
+      <button type="button" class="instrument" data-name="Keyboard" aria-pressed="false">
         <span class="emoji">🎛️</span>Keyboard
       </button>
-      <button class="instrument" data-name="Tabla">
+      <button type="button" class="instrument" data-name="Tabla" aria-pressed="false">
         <span class="emoji">🥁</span>Tabla
       </button>
-      <button class="instrument" data-name="Guitar">
+      <button type="button" class="instrument" data-name="Guitar" aria-pressed="false">
         <span class="emoji">🎸</span>Guitar
       </button>
-      <button class="instrument" data-name="Flute">
+      <button type="button" class="instrument" data-name="Flute" aria-pressed="false">
         <span class="emoji">🪈</span>Flute
       </button>
-      <button class="instrument" data-name="Sitar">
+      <button type="button" class="instrument" data-name="Sitar" aria-pressed="false">
         <span class="emoji">🪕</span>Sitar
       </button>
-      <button class="instrument" data-name="Violin">
+      <button type="button" class="instrument" data-name="Violin" aria-pressed="false">
         <span class="emoji">🎻</span>Violin
       </button>
-      <button class="instrument" data-name="Drums">
+      <button type="button" class="instrument" data-name="Drums" aria-pressed="false">
         <span class="emoji">🥁</span>Drums
       </button>
-      <button class="instrument" data-name="Harmonium">
+      <button type="button" class="instrument" data-name="Harmonium" aria-pressed="false">
         <span class="emoji">🎼</span>Harmonium
       </button>
-      <button class="instrument" data-name="Bass">
+      <button type="button" class="instrument" data-name="Bass" aria-pressed="false">
         <span class="emoji">🎸</span>Bass
       </button>
-      <button class="instrument" data-name="Strings">
+      <button type="button" class="instrument" data-name="Strings" aria-pressed="false">
         <span class="emoji">🎻</span>Strings
       </button>
-      <button class="instrument" data-name="Synth">
+      <button type="button" class="instrument" data-name="Synth" aria-pressed="false">
         <span class="emoji">🎚️</span>Synth
       </button>
     </div>
-    <p id="selected" class="small">0 instruments selected</p>
+
+    <p id="selected" class="small" aria-live="polite">0 instruments selected.</p>
   </section>
 
   <section class="panel">
     <div class="step">STEP 03</div>
     <h2>Instrument intensity</h2>
-    <p>Preferred level for the added instruments.</p>
+    <p>Choose the preferred intensity for your added instruments.</p>
+
     <input id="intensity" type="range" min="1" max="100" value="65">
     <p class="small">Intensity: <span id="level">65</span>%</p>
-    <button class="primary" id="process">Prepare my music</button>
+
+    <button type="button" class="primary" id="process">
+      Prepare my music
+    </button>
+
     <div id="status" class="notice" role="status" aria-live="polite">
-      Your studio is ready. Upload a song and select instruments to begin.
+      Upload a song and select your instruments to begin.
     </div>
   </section>
 </main>
@@ -168,126 +262,173 @@ footer {text-align:center;padding:22px;color:var(--muted);
 <footer>For you Music · Made for music lovers ♫</footer>
 
 <script>
-const fileInput = document.getElementById('file');
-const player = document.getElementById('player');
-const songName = document.getElementById('songName');
-const statusBox = document.getElementById('status');
-const processButton = document.getElementById('process');
-const selectedText = document.getElementById('selected');
-const chosen = new Set();
-let currentURL = null;
-let validSong = false;
+(function () {
+  const fileInput = document.getElementById("file");
+  const player = document.getElementById("player");
+  const songName = document.getElementById("songName");
+  const statusBox = document.getElementById("status");
+  const selectedText = document.getElementById("selected");
+  const processButton = document.getElementById("process");
+  const intensity = document.getElementById("intensity");
 
-function status(message) {
-  statusBox.textContent = message;
-}
+  const selectedInstruments = new Set();
+  let currentURL = null;
+  let validSong = false;
+  let selectionNumber = 0;
 
-fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0];
-  validSong = false;
-  player.pause();
-  player.hidden = true;
-
-  if (currentURL) URL.revokeObjectURL(currentURL);
-  currentURL = null;
-
-  if (!file) {
-    songName.textContent = 'No song selected yet.';
-    status('Choose an audio file to continue.');
-    return;
+  function showStatus(message) {
+    statusBox.textContent = message;
   }
 
-  if (!file.type.startsWith('audio/')) {
-    fileInput.value = '';
-    songName.textContent = 'No song selected yet.';
-    status('Please choose a supported audio file.');
-    return;
-  }
+  function clearCurrentSong() {
+    validSong = false;
+    selectionNumber++;
 
-  if (file.size > 50 * 1024 * 1024) {
-    fileInput.value = '';
-    songName.textContent = 'No song selected yet.';
-    status('This prototype allows files up to 50 MB.');
-    return;
-  }
+    player.pause();
+    player.hidden = true;
+    player.removeAttribute("src");
+    player.load();
 
-  currentURL = URL.createObjectURL(file);
-  player.src = currentURL;
-  songName.textContent = 'Checking: ' + file.name;
-  player.hidden = false;
-
-  player.onloadedmetadata = () => {
-    if (!Number.isFinite(player.duration) || player.duration <= 0) {
-      status('Could not read the song duration. Try another audio file.');
-      return;
-    }
-    if (player.duration > 600) {
-      fileInput.value = '';
-      player.pause();
-      player.removeAttribute('src');
-      player.load();
-      player.hidden = true;
+    if (currentURL) {
       URL.revokeObjectURL(currentURL);
       currentURL = null;
-      songName.textContent = 'Song exceeds 10 minutes.';
-      status('Please select a song that is 10 minutes or shorter.');
+    }
+  }
+
+  fileInput.addEventListener("change", function () {
+    const file = fileInput.files && fileInput.files[0];
+
+    clearCurrentSong();
+
+    if (!file) {
+      songName.textContent = "No song selected yet.";
+      showStatus("No file selected. Choose an audio file to continue.");
       return;
     }
 
-    validSong = true;
-    songName.textContent = file.name + ' · ' +
-      Math.floor(player.duration / 60) + ':' +
-      String(Math.floor(player.duration % 60)).padStart(2, '0');
-    status('Song ready! Select one or more instruments.');
-  };
+    const thisSelection = selectionNumber;
 
-  player.onerror = () => {
-    validSong = false;
-    status('Unable to read this file. Try a different audio format.');
-  };
-});
-
-document.querySelectorAll('.instrument').forEach(button => {
-  button.addEventListener('click', () => {
-    const name = button.dataset.name;
-    if (chosen.has(name)) {
-      chosen.delete(name);
-      button.classList.remove('selected');
-      button.setAttribute('aria-pressed', 'false');
-    } else {
-      chosen.add(name);
-      button.classList.add('selected');
-      button.setAttribute('aria-pressed', 'true');
+    if (file.size === 0) {
+      songName.textContent = "This file is empty.";
+      showStatus("Choose a different audio file.");
+      fileInput.value = "";
+      return;
     }
-    selectedText.textContent = chosen.size + ' instrument' +
-      (chosen.size === 1 ? '' : 's') + ' selected' +
-      (chosen.size ? ': ' + [...chosen].join(', ') : '');
+
+    if (file.size > 50 * 1024 * 1024) {
+      songName.textContent = "File is too large.";
+      showStatus("This prototype supports files up to 50 MB.");
+      fileInput.value = "";
+      return;
+    }
+
+    const supportedExtensions = /\.(mp3|wav|m4a|ogg|aac|flac)$/i;
+    if (!file.type.startsWith("audio/") &&
+        !supportedExtensions.test(file.name)) {
+      songName.textContent = "Unsupported file.";
+      showStatus("Choose an audio file such as MP3, WAV, or M4A.");
+      fileInput.value = "";
+      return;
+    }
+
+    songName.textContent = "Loading: " + file.name;
+    showStatus("Checking your audio file...");
+
+    currentURL = URL.createObjectURL(file);
+    player.src = currentURL;
+    player.hidden = false;
+
+    player.onloadedmetadata = function () {
+      if (thisSelection !== selectionNumber) return;
+
+      const duration = player.duration;
+
+      if (!Number.isFinite(duration) || duration <= 0) {
+        validSong = false;
+        songName.textContent = "Could not read the audio duration.";
+        showStatus("Try another audio file. Some formats may not be supported by your browser.");
+        return;
+      }
+
+      if (duration > 600) {
+        clearCurrentSong();
+        fileInput.value = "";
+        songName.textContent = "Song exceeds 10 minutes.";
+        showStatus("Please choose a song that is 10 minutes or shorter.");
+        return;
+      }
+
+      validSong = true;
+
+      const minutes = Math.floor(duration / 60);
+      const seconds = String(Math.floor(duration % 60)).padStart(2, "0");
+
+      songName.textContent =
+        file.name + " · " + minutes + ":" + seconds;
+
+      showStatus("Song loaded successfully! Select one or more instruments.");
+    };
+
+    player.onerror = function () {
+      if (thisSelection !== selectionNumber) return;
+
+      validSong = false;
+      songName.textContent = "Unable to play this audio file.";
+      showStatus("Try a different audio file or a common MP3 format.");
+    };
   });
-});
 
-document.getElementById('intensity').addEventListener('input', event => {
-  document.getElementById('level').textContent = event.target.value;
-});
+  document.querySelectorAll(".instrument").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const name = button.dataset.name;
 
-processButton.addEventListener('click', () => {
-  if (!validSong) {
-    status('First upload a valid song that is no longer than 10 minutes.');
-    return;
-  }
-  if (chosen.size === 0) {
-    status('Please select at least one instrument.');
-    return;
-  }
+      if (selectedInstruments.has(name)) {
+        selectedInstruments.delete(name);
+        button.classList.remove("selected");
+        button.setAttribute("aria-pressed", "false");
+      } else {
+        selectedInstruments.add(name);
+        button.classList.add("selected");
+        button.setAttribute("aria-pressed", "true");
+      }
 
-  status('Your selections are ready: ' + [...chosen].join(', ') +
-    '. Intensity: ' + document.getElementById('intensity').value +
-    '%. The AI generation backend still needs to be connected. ' +
-    'No modified song has been generated yet.');
-});
+      const list = Array.from(selectedInstruments);
 
-window.addEventListener('pagehide', () => {
-  if (currentURL) URL.revokeObjectURL(currentURL);
-});
+      selectedText.textContent = list.length
+        ? list.length + " instrument(s) selected: " + list.join(", ")
+        : "0 instruments selected.";
+    });
+  });
+
+  intensity.addEventListener("input", function () {
+    document.getElementById("level").textContent = intensity.value;
+  });
+
+  processButton.addEventListener("click", function () {
+    if (!validSong) {
+      showStatus("Please upload a valid audio file of 10 minutes or less first.");
+      return;
+    }
+
+    if (selectedInstruments.size === 0) {
+      showStatus("Please select at least one instrument.");
+      return;
+    }
+
+    showStatus(
+      "Your song and selections are ready: " +
+      Array.from(selectedInstruments).join(", ") +
+      ". Intensity: " + intensity.value + "%. " +
+      "The AI generation service is not connected yet, so no new instrumental audio has been generated."
+    );
+  });
+
+  window.addEventListener("pagehide", function () {
+    if (currentURL) {
+      URL.revokeObjectURL(currentURL);
+    }
+  });
+})();
 </script>
 </body>
 </html>
