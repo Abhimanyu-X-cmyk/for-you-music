@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080b14">
 <title>For you Music — AI Music Studio</title>
 
@@ -65,7 +65,7 @@ h2 {font-size:18px;margin:0 0 8px}
   display:block;
   border:1px dashed #536580;
   border-radius:14px;
-  padding:23px 14px;
+  padding:22px 14px;
   text-align:center;
   margin-top:15px;
   background:#0b1220;
@@ -85,10 +85,19 @@ input[type=file]::file-selector-button {
   border-radius:8px;
   background:#1a2940;
   color:white;
-  margin-right:10px;
+  margin-right:8px;
 }
-#songName {overflow-wrap:anywhere;margin-top:13px}
-audio {display:block;width:100%;margin-top:14px}
+#fileName {overflow-wrap:anywhere;margin-top:13px}
+audio, video {
+  display:block;
+  width:100%;
+  margin-top:14px;
+}
+video {
+  max-height:350px;
+  border-radius:12px;
+  background:#000;
+}
 .grid {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
@@ -107,7 +116,6 @@ audio {display:block;width:100%;margin-top:14px}
   cursor:pointer;
 }
 .instrument .emoji {display:block;font-size:25px;margin-bottom:7px}
-.instrument small {display:block;color:var(--muted);font-size:10px}
 .instrument.selected {
   border-color:var(--blue);
   background:#10273a;
@@ -165,39 +173,48 @@ footer {
   <section class="hero">
     <div class="kicker">YOUR MUSIC, YOUR WAY</div>
     <h1>Give your song<br><span>a new sound.</span></h1>
-    <p>Upload your song, choose your favourite instruments,
+    <p>Upload a song or music video, choose your instruments,
     and prepare for a new musical arrangement.</p>
   </section>
 
   <section class="panel">
     <div class="step">STEP 01</div>
-    <h2>Upload your song</h2>
-    <p class="small">Choose an audio file up to 10 minutes long.</p>
+    <h2>Upload audio or video</h2>
+    <p class="small">
+      Maximum duration: 10 minutes. Maximum file size: 50 MB.
+    </p>
 
-    <div class="upload">
+    <label class="upload">
       <div class="upload-icon">♫ ↑</div>
-      <strong>Choose audio from your phone</strong>
-      <p class="small">MP3, WAV, M4A, OGG and other supported audio files</p>
-
+      <strong>Choose audio or video from your phone</strong>
+      <p class="small">MP3, WAV, M4A, MP4, MOV, WebM and supported formats</p>
       <input
         id="file"
         type="file"
-        accept=".mp3,.wav,.m4a,.ogg,.aac,.flac,audio/*"
-        aria-label="Choose an audio file"
-      />
+        accept="audio/*,video/*,.mp3,.wav,.m4a,.ogg,.aac,.flac,.mp4,.mov,.webm,.mkv"
+        aria-label="Choose an audio or video file"
+      >
+    </label>
+
+    <div id="fileName" class="small" aria-live="polite">
+      No file selected yet.
     </div>
 
-    <div id="songName" class="small" aria-live="polite">
-      No song selected yet.
-    </div>
+    <audio id="audioPlayer" controls preload="metadata" hidden></audio>
 
-    <audio id="player" controls preload="metadata" hidden></audio>
+    <video
+      id="videoPlayer"
+      controls
+      playsinline
+      preload="metadata"
+      hidden
+    ></video>
   </section>
 
   <section class="panel">
     <div class="step">STEP 02</div>
     <h2>Choose your instruments</h2>
-    <p>Select multiple instruments to create your preferred combination.</p>
+    <p>Select as many instruments as you like.</p>
 
     <div class="grid" id="instruments">
       <button type="button" class="instrument" data-name="Piano" aria-pressed="false">
@@ -238,7 +255,9 @@ footer {
       </button>
     </div>
 
-    <p id="selected" class="small" aria-live="polite">0 instruments selected.</p>
+    <p id="selected" class="small" aria-live="polite">
+      0 instruments selected.
+    </p>
   </section>
 
   <section class="panel">
@@ -254,7 +273,7 @@ footer {
     </button>
 
     <div id="status" class="notice" role="status" aria-live="polite">
-      Upload a song and select your instruments to begin.
+      Upload a song or video and select instruments to begin.
     </div>
   </section>
 </main>
@@ -264,30 +283,40 @@ footer {
 <script>
 (function () {
   const fileInput = document.getElementById("file");
-  const player = document.getElementById("player");
-  const songName = document.getElementById("songName");
+  const audioPlayer = document.getElementById("audioPlayer");
+  const videoPlayer = document.getElementById("videoPlayer");
+  const fileName = document.getElementById("fileName");
   const statusBox = document.getElementById("status");
   const selectedText = document.getElementById("selected");
-  const processButton = document.getElementById("process");
   const intensity = document.getElementById("intensity");
 
   const selectedInstruments = new Set();
+
   let currentURL = null;
-  let validSong = false;
+  let validFile = false;
   let selectionNumber = 0;
+  let mediaType = null;
 
   function showStatus(message) {
     statusBox.textContent = message;
   }
 
-  function clearCurrentSong() {
-    validSong = false;
+  function clearMedia() {
+    validFile = false;
+    mediaType = null;
     selectionNumber++;
 
-    player.pause();
-    player.hidden = true;
-    player.removeAttribute("src");
-    player.load();
+    audioPlayer.pause();
+    videoPlayer.pause();
+
+    audioPlayer.removeAttribute("src");
+    videoPlayer.removeAttribute("src");
+
+    audioPlayer.load();
+    videoPlayer.load();
+
+    audioPlayer.hidden = true;
+    videoPlayer.hidden = true;
 
     if (currentURL) {
       URL.revokeObjectURL(currentURL);
@@ -295,46 +324,69 @@ footer {
     }
   }
 
+  function formatDuration(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remaining = String(Math.floor(seconds % 60)).padStart(2, "0");
+    return minutes + ":" + remaining;
+  }
+
   fileInput.addEventListener("change", function () {
     const file = fileInput.files && fileInput.files[0];
 
-    clearCurrentSong();
+    clearMedia();
 
     if (!file) {
-      songName.textContent = "No song selected yet.";
-      showStatus("No file selected. Choose an audio file to continue.");
+      fileName.textContent = "No file selected yet.";
+      showStatus("Choose an audio or video file to continue.");
       return;
     }
 
     const thisSelection = selectionNumber;
+    const extension = file.name.split(".").pop().toLowerCase();
+
+    const audioExtensions = [
+      "mp3", "wav", "m4a", "ogg", "aac", "flac"
+    ];
+    const videoExtensions = [
+      "mp4", "mov", "webm", "mkv", "avi", "m4v", "3gp"
+    ];
+
+    const isVideo =
+      file.type.startsWith("video/") ||
+      videoExtensions.includes(extension);
+
+    const isAudio =
+      file.type.startsWith("audio/") ||
+      audioExtensions.includes(extension);
+
+    if (!isAudio && !isVideo) {
+      fileName.textContent = "Unsupported file type.";
+      showStatus("Choose a supported audio or video file.");
+      fileInput.value = "";
+      return;
+    }
 
     if (file.size === 0) {
-      songName.textContent = "This file is empty.";
-      showStatus("Choose a different audio file.");
+      fileName.textContent = "The file is empty.";
+      showStatus("Choose a different file.");
       fileInput.value = "";
       return;
     }
 
     if (file.size > 50 * 1024 * 1024) {
-      songName.textContent = "File is too large.";
-      showStatus("This prototype supports files up to 50 MB.");
+      fileName.textContent = "The file is too large.";
+      showStatus("Please choose a file smaller than 50 MB.");
       fileInput.value = "";
       return;
     }
 
-    const supportedExtensions = /\.(mp3|wav|m4a|ogg|aac|flac)$/i;
-    if (!file.type.startsWith("audio/") &&
-        !supportedExtensions.test(file.name)) {
-      songName.textContent = "Unsupported file.";
-      showStatus("Choose an audio file such as MP3, WAV, or M4A.");
-      fileInput.value = "";
-      return;
-    }
-
-    songName.textContent = "Loading: " + file.name;
-    showStatus("Checking your audio file...");
+    mediaType = isVideo ? "video" : "audio";
+    fileName.textContent = "Loading " + file.name + "...";
+    showStatus("Checking file duration and playback support...");
 
     currentURL = URL.createObjectURL(file);
+
+    const player = isVideo ? videoPlayer : audioPlayer;
     player.src = currentURL;
     player.hidden = false;
 
@@ -344,37 +396,43 @@ footer {
       const duration = player.duration;
 
       if (!Number.isFinite(duration) || duration <= 0) {
-        validSong = false;
-        songName.textContent = "Could not read the audio duration.";
-        showStatus("Try another audio file. Some formats may not be supported by your browser.");
+        validFile = false;
+        fileName.textContent = "Unable to read the file duration.";
+        showStatus(
+          "This format may not be supported by your browser. " +
+          "Try an MP3 audio file or MP4 video."
+        );
         return;
       }
 
       if (duration > 600) {
-        clearCurrentSong();
+        clearMedia();
         fileInput.value = "";
-        songName.textContent = "Song exceeds 10 minutes.";
-        showStatus("Please choose a song that is 10 minutes or shorter.");
+        fileName.textContent = "File exceeds 10 minutes.";
+        showStatus("Please select a file that is 10 minutes or shorter.");
         return;
       }
 
-      validSong = true;
+      validFile = true;
+      fileName.textContent =
+        file.name + " · " + formatDuration(duration) +
+        " · " + (isVideo ? "Video" : "Audio");
 
-      const minutes = Math.floor(duration / 60);
-      const seconds = String(Math.floor(duration % 60)).padStart(2, "0");
-
-      songName.textContent =
-        file.name + " · " + minutes + ":" + seconds;
-
-      showStatus("Song loaded successfully! Select one or more instruments.");
+      showStatus(
+        (isVideo ? "Video" : "Audio") +
+        " loaded successfully! You can preview it below and select instruments."
+      );
     };
 
     player.onerror = function () {
       if (thisSelection !== selectionNumber) return;
 
-      validSong = false;
-      songName.textContent = "Unable to play this audio file.";
-      showStatus("Try a different audio file or a common MP3 format.");
+      validFile = false;
+      fileName.textContent = "Unable to play this file.";
+      showStatus(
+        "Try another file. MP3 is a good choice for audio, " +
+        "and MP4 with H.264 video and AAC audio is a good choice for video."
+      );
     };
   });
 
@@ -404,29 +462,28 @@ footer {
     document.getElementById("level").textContent = intensity.value;
   });
 
-  processButton.addEventListener("click", function () {
-    if (!validSong) {
-      showStatus("Please upload a valid audio file of 10 minutes or less first.");
+  document.getElementById("process").addEventListener("click", function () {
+    if (!validFile) {
+      showStatus("Please select a valid audio or video file first.");
       return;
     }
 
     if (selectedInstruments.size === 0) {
-      showStatus("Please select at least one instrument.");
+      showStatus("Select at least one instrument.");
       return;
     }
 
     showStatus(
-      "Your song and selections are ready: " +
+      "Ready to process your " + mediaType + "! Selected instruments: " +
       Array.from(selectedInstruments).join(", ") +
       ". Intensity: " + intensity.value + "%. " +
-      "The AI generation service is not connected yet, so no new instrumental audio has been generated."
+      "The AI generation backend is not connected yet. " +
+      "No new instrumental audio or edited video has been generated."
     );
   });
 
   window.addEventListener("pagehide", function () {
-    if (currentURL) {
-      URL.revokeObjectURL(currentURL);
-    }
+    if (currentURL) URL.revokeObjectURL(currentURL);
   });
 })();
 </script>
