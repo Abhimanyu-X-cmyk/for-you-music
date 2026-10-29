@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For you Music | AI Music Studio</title>
+<style>
+:root {
+  --bg:#080b14; --panel:#111827; --line:#263248;
+  --text:#f4f7ff; --muted:#9ba9c1;
+  --blue:#36d9ff; --purple:#a78bfa;
+}
+* {box-sizing:border-box}
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,sans-serif;
+}
+header {
+  padding:18px 5%; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1px solid var(--line);
+}
+.logo {font-weight:800;font-size:21px}
+.logo span {color:var(--blue)}
+.pill {border:1px solid var(--line);padding:7px 11px;
+  border-radius:30px;color:var(--muted);font-size:12px}
+main {max-width:900px;margin:auto;padding:32px 18px 60px}
+.hero {text-align:center;padding:25px 0 30px}
+.kicker {color:var(--blue);font-size:12px;letter-spacing:3px}
+h1 {font-size:clamp(35px,8vw,60px);line-height:1.08;
+  margin:15px 0}
+h1 span {background:linear-gradient(90deg,var(--blue),var(--purple));
+  color:transparent;background-clip:text}
+p {color:var(--muted);line-height:1.65}
+.hero p {max-width:520px;margin:auto}
+.panel {background:var(--panel);border:1px solid var(--line);
+  border-radius:20px;padding:20px;margin-bottom:18px}
+h2 {font-size:18px;margin:0 0 7px}
+.step {color:var(--blue);font-size:12px;margin-bottom:8px}
+.upload {
+  display:block;border:1px dashed #536580;border-radius:14px;
+  padding:28px 12px;text-align:center;margin-top:16px;
+  cursor:pointer;background:#0b1220;
+}
+.upload strong {display:block;font-size:17px;margin:10px}
+.upload input {width:100%;margin-top:12px}
+.small {font-size:12px}
+#songName {overflow-wrap:anywhere;margin:12px 0}
+audio {width:100%;margin-top:10px}
+.grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;margin-top:17px}
+.instrument {
+  color:var(--text);background:#0b1220;border:1px solid var(--line);
+  padding:15px 5px;border-radius:13px;cursor:pointer;
+  font:inherit;min-height:95px;
+}
+.instrument .emoji {font-size:25px;display:block;margin-bottom:8px}
+.instrument.selected {border-color:var(--blue);
+  background:#10273a;box-shadow:inset 0 0 0 1px var(--blue)}
+.instrument:focus-visible,button:focus-visible {
+  outline:2px solid var(--blue);outline-offset:3px
+}
+.instrument small {color:var(--muted);font-size:11px}
+input[type=range] {width:100%;accent-color:var(--blue)}
+.primary {
+  width:100%;border:0;border-radius:13px;padding:16px;
+  color:#07111c;background:linear-gradient(90deg,var(--blue),#a5f3fc);
+  font-size:16px;font-weight:800;cursor:pointer;margin-top:17px;
+}
+.primary:disabled {opacity:.5;cursor:not-allowed}
+.notice {font-size:13px;border-radius:12px;padding:13px;
+  background:#0a1422;color:var(--muted);margin-top:14px}
+#status {overflow-wrap:anywhere}
+footer {text-align:center;padding:22px;color:var(--muted);
+  font-size:12px;border-top:1px solid var(--line)}
+@media(min-width:600px) {
+  .grid {grid-template-columns:repeat(4,minmax(0,1fr))}
+  .panel {padding:26px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">♫ For you <span>Music</span></div>
+  <div class="pill">MUSIC STUDIO</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="kicker">YOUR MUSIC, YOUR WAY</div>
+    <h1>Give your song<br><span>a new sound.</span></h1>
+    <p>Upload your music. Choose your instruments.
+       Imagine a whole new arrangement made for you.</p>
+  </section>
+
+  <section class="panel">
+    <div class="step">STEP 01</div>
+    <h2>Upload your song</h2>
+    <p class="small">Choose an audio file up to 10 minutes long.</p>
+    <label class="upload">
+      <span style="font-size:32px">♫ ↑</span>
+      <strong>Choose audio from your phone</strong>
+      <span class="small">MP3, WAV, M4A, OGG and supported audio formats</span>
+      <input id="file" type="file" accept="audio/*">
+    </label>
+    <div id="songName" class="small">No song selected yet.</div>
+    <audio id="player" controls hidden></audio>
+  </section>
+
+  <section class="panel">
+    <div class="step">STEP 02</div>
+    <h2>Choose your instruments</h2>
+    <p>Select as many as you like.</p>
+    <div class="grid" id="instruments">
+      <button class="instrument" data-name="Piano">
+        <span class="emoji">🎹</span>Piano
+      </button>
+      <button class="instrument" data-name="Keyboard">
+        <span class="emoji">🎛️</span>Keyboard
+      </button>
+      <button class="instrument" data-name="Tabla">
+        <span class="emoji">🥁</span>Tabla
+      </button>
+      <button class="instrument" data-name="Guitar">
+        <span class="emoji">🎸</span>Guitar
+      </button>
+      <button class="instrument" data-name="Flute">
+        <span class="emoji">🪈</span>Flute
+      </button>
+      <button class="instrument" data-name="Sitar">
+        <span class="emoji">🪕</span>Sitar
+      </button>
+      <button class="instrument" data-name="Violin">
+        <span class="emoji">🎻</span>Violin
+      </button>
+      <button class="instrument" data-name="Drums">
+        <span class="emoji">🥁</span>Drums
+      </button>
+      <button class="instrument" data-name="Harmonium">
+        <span class="emoji">🎼</span>Harmonium
+      </button>
+      <button class="instrument" data-name="Bass">
+        <span class="emoji">🎸</span>Bass
+      </button>
+      <button class="instrument" data-name="Strings">
+        <span class="emoji">🎻</span>Strings
+      </button>
+      <button class="instrument" data-name="Synth">
+        <span class="emoji">🎚️</span>Synth
+      </button>
+    </div>
+    <p id="selected" class="small">0 instruments selected</p>
+  </section>
+
+  <section class="panel">
+    <div class="step">STEP 03</div>
+    <h2>Instrument intensity</h2>
+    <p>Preferred level for the added instruments.</p>
+    <input id="intensity" type="range" min="1" max="100" value="65">
+    <p class="small">Intensity: <span id="level">65</span>%</p>
+    <button class="primary" id="process">Prepare my music</button>
+    <div id="status" class="notice" role="status" aria-live="polite">
+      Your studio is ready. Upload a song and select instruments to begin.
+    </div>
+  </section>
+</main>
+
+<footer>For you Music · Made for music lovers ♫</footer>
+
+<script>
+const fileInput = document.getElementById('file');
+const player = document.getElementById('player');
+const songName = document.getElementById('songName');
+const statusBox = document.getElementById('status');
+const processButton = document.getElementById('process');
+const selectedText = document.getElementById('selected');
+const chosen = new Set();
+let currentURL = null;
+let validSong = false;
+
+function status(message) {
+  statusBox.textContent = message;
+}
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  validSong = false;
+  player.pause();
+  player.hidden = true;
+
+  if (currentURL) URL.revokeObjectURL(currentURL);
+  currentURL = null;
+
+  if (!file) {
+    songName.textContent = 'No song selected yet.';
+    status('Choose an audio file to continue.');
+    return;
+  }
+
+  if (!file.type.startsWith('audio/')) {
+    fileInput.value = '';
+    songName.textContent = 'No song selected yet.';
+    status('Please choose a supported audio file.');
+    return;
+  }
+
+  if (file.size > 50 * 1024 * 1024) {
+    fileInput.value = '';
+    songName.textContent = 'No song selected yet.';
+    status('This prototype allows files up to 50 MB.');
+    return;
+  }
+
+  currentURL = URL.createObjectURL(file);
+  player.src = currentURL;
+  songName.textContent = 'Checking: ' + file.name;
+  player.hidden = false;
+
+  player.onloadedmetadata = () => {
+    if (!Number.isFinite(player.duration) || player.duration <= 0) {
+      status('Could not read the song duration. Try another audio file.');
+      return;
+    }
+    if (player.duration > 600) {
+      fileInput.value = '';
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+      player.hidden = true;
+      URL.revokeObjectURL(currentURL);
+      currentURL = null;
+      songName.textContent = 'Song exceeds 10 minutes.';
+      status('Please select a song that is 10 minutes or shorter.');
+      return;
+    }
+
+    validSong = true;
+    songName.textContent = file.name + ' · ' +
+      Math.floor(player.duration / 60) + ':' +
+      String(Math.floor(player.duration % 60)).padStart(2, '0');
+    status('Song ready! Select one or more instruments.');
+  };
+
+  player.onerror = () => {
+    validSong = false;
+    status('Unable to read this file. Try a different audio format.');
+  };
+});
+
+document.querySelectorAll('.instrument').forEach(button => {
+  button.addEventListener('click', () => {
+    const name = button.dataset.name;
+    if (chosen.has(name)) {
+      chosen.delete(name);
+      button.classList.remove('selected');
+      button.setAttribute('aria-pressed', 'false');
+    } else {
+      chosen.add(name);
+      button.classList.add('selected');
+      button.setAttribute('aria-pressed', 'true');
+    }
+    selectedText.textContent = chosen.size + ' instrument' +
+      (chosen.size === 1 ? '' : 's') + ' selected' +
+      (chosen.size ? ': ' + [...chosen].join(', ') : '');
+  });
+});
+
+document.getElementById('intensity').addEventListener('input', event => {
+  document.getElementById('level').textContent = event.target.value;
+});
+
+processButton.addEventListener('click', () => {
+  if (!validSong) {
+    status('First upload a valid song that is no longer than 10 minutes.');
+    return;
+  }
+  if (chosen.size === 0) {
+    status('Please select at least one instrument.');
+    return;
+  }
+
+  status('Your selections are ready: ' + [...chosen].join(', ') +
+    '. Intensity: ' + document.getElementById('intensity').value +
+    '%. The AI generation backend still needs to be connected. ' +
+    'No modified song has been generated yet.');
+});
+
+window.addEventListener('pagehide', () => {
+  if (currentURL) URL.revokeObjectURL(currentURL);
+});
+</script>
+</body>
+</html>
